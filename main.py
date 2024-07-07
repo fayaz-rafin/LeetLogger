@@ -90,7 +90,7 @@ async def solve_problem(ctx, problem_id, *, problem_name):
     # Creating the embed
     embed = discord.Embed(
         title="Problem Solved!",
-        description=f"**{problem_name}** (ID: {problem_id})",
+        description=f"**{problem_id}. {problem_name}**",
         color=discord.Color.green()
     )
     embed.add_field(name="Solver", value=ctx.author.display_name, inline=True)

@@ -46,13 +46,13 @@ Start the bot by running:
 # Usage:
 ## Commands
 -  !solve [problem_id] [problem_name]
-
+![Screenshot 1](images/2.png)
 Description: Record a problem as solved.
 Usage: `!solve 1 Two Sum`
 This command logs the problem and updates your daily streak.
 
-
 - !progress
+![Screenshot 2](images/1.png)
 Description: Shows all the problems you have solved and your current streak.
 Usage: `!progress`
 The bot will respond with an embed listing each problem solved, the date solved, and your current streak.
@@ -62,10 +62,10 @@ The bot will respond with an embed listing each problem solved, the date solved,
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
 ### Fork the Project
-Create your Feature Branch (git checkout -b feature/AmazingFeature)
-Commit your Changes (git commit -m 'Add some AmazingFeature')
-Push to the Branch (git push origin feature/AmazingFeature)
-Open a Pull Request
-License
+- Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+- Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+- Push to the Branch (`git push origin feature/AmazingFeature`)
+- Open a Pull Request
 
+## License
 Distributed under the MIT License. See LICENSE for more information.
