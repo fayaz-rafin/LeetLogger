@@ -14,6 +14,7 @@ intents = discord.Intents.all()  # Adjust the intents as necessary
 intents.messages = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+#Supabase query function
 async def supabase_query(query='', method='POST', data=None):
     async with aiohttp.ClientSession() as session:
         headers = {
@@ -98,35 +99,61 @@ async def solve_problem(ctx, problem_id, *, problem_name):
 
     await ctx.send(embed=embed)
 
-    
+#Command to check the progress of a user
 @bot.command(name='progress')
 async def check_progress(ctx):
     user_id = str(ctx.author.id)
     query = f'user_id=eq.{user_id}'
-    result = await supabase_query(query=query, method='GET')
-    if result:
-        # Assuming all entries for a user should have the same streak count,
-        # we can take the streak count from the last entry.
-        current_streak = result[-1]['streak_count']
-        
-        # Create an embed object
-        embed = discord.Embed(
-            title=f"Progress for {ctx.author.display_name}",
-            description=f"Here are the problems you've solved:\nCurrent streak: {current_streak} days",
-            color=discord.Color.blue()  # You can choose any color
-        )
+    results = await supabase_query(query=query, method='GET')
 
-        # Adding fields to the embed
-        for item in result:
-            embed.add_field(
-                name=item['problem_id'] + ". " + item['problem_name'],
-                value=f"Solve on: {item['solved_date'][:10]}",
-                inline=False  # Each problem in a new line
-            )
-
-        await ctx.send(embed=embed)
-    else:
+    if not results:
         await ctx.send("You haven't solved any problems yet!")
+        return
+
+    # Constants for pagination
+    items_per_page = 6
+    pages = [results[i:i + items_per_page] for i in range(0, len(results), items_per_page)]
+    current_page = 0
+
+    # Function to create embeds for a specific page
+    def get_embed(page_index):
+        embed = discord.Embed(
+            title=f"Progress for {ctx.author.display_name} (Page {page_index + 1}/{len(pages)})",
+            description="Here are the problems you've solved:",
+            color=discord.Color.blue()
+        )
+        embed.set_footer(text=f"Current User Streak: {results[-1]['streak_count']} days")
+        for item in pages[page_index]:
+            embed.add_field(
+                name=item['problem_id'] + ". "+ item['problem_name'],
+                value=f"Solved on: {item['solved_date'][:10]}",
+                inline=False
+            )
+        return embed
+
+    # Send the initial embed
+    message = await ctx.send(embed=get_embed(current_page))
+    await message.add_reaction('⬅️')
+    await message.add_reaction('➡️')
+
+    # Check function for reactions
+    def check(reaction, user):
+        return user == ctx.author and str(reaction.emoji) in ['⬅️', '➡️']
+
+    while True:
+        try:
+            reaction, user = await ctx.bot.wait_for('reaction_add', timeout=60.0, check=check)
+            if str(reaction.emoji) == '➡️' and current_page < len(pages) - 1:
+                current_page += 1
+                await message.edit(embed=get_embed(current_page))
+                await message.remove_reaction(reaction, user)
+            elif str(reaction.emoji) == '⬅️' and current_page > 0:
+                current_page -= 1
+                await message.edit(embed=get_embed(current_page))
+                await message.remove_reaction(reaction, user)
+        except asyncio.TimeoutError:
+            await message.clear_reactions()
+            break
 
     
 

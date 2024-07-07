@@ -50,7 +50,7 @@ Start the bot by running:
 Description: Record a problem as solved.
 Usage: `!solve 1 Two Sum`
 This command logs the problem and updates your daily streak.
-!progress
+
 
 - !progress
 Description: Shows all the problems you have solved and your current streak.
