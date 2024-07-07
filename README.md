@@ -46,13 +46,16 @@ Start the bot by running:
 # Usage:
 ## Commands
 -  !solve [problem_id] [problem_name]
+
 ![Screenshot 1](images/2.png)
 Description: Record a problem as solved.
 Usage: `!solve 1 Two Sum`
 This command logs the problem and updates your daily streak.
 
 - !progress
+
 ![Screenshot 2](images/1.png)
+
 Description: Shows all the problems you have solved and your current streak.
 Usage: `!progress`
 The bot will respond with an embed listing each problem solved, the date solved, and your current streak.
